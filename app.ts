@@ -1,22 +1,22 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const morgan = require('morgan');
-const path = require('path');
-const session = require('express-session');
-const nunjucks = require('nunjucks');
-const dotenv = require('dotenv');
-const passport = require('passport');
-const helmet = require('helmet');
-const hpp = require('hpp');
-const { sequelize } = require('./models');
+import express, { ErrorRequestHandler } from 'express';
+import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
+import path from 'path';
+import session from 'express-session';
+import nunjucks from 'nunjucks';
+import dotenv from 'dotenv';
+import passport from 'passport';
+import helmet from 'helmet';
+import hpp from 'hpp';
+import { sequelize } from './models';
 
 dotenv.config();
-const logger = require('./logger');
-const pageRouter = require('./routes/page');
-const authRouter = require('./routes/auth');
-const postRouter = require('./routes/post');
-const userRouter = require('./routes/user');
-const passportConfig = require('./passport');
+import logger from './logger';
+import pageRouter from './routes/page';
+import authRouter from './routes/auth';
+import postRouter from './routes/post';
+import userRouter from './routes/user';
+import passportConfig from './passport';
 
 const app = express();
 passportConfig();
@@ -53,7 +53,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
     resave: false,
     saveUninitialized: false,
-    secret: process.env.COOKIE_SECRET,
+    secret: process.env.COOKIE_SECRET!,
     cookie: {
         httpOnly: true,
         secure: false,
@@ -74,14 +74,15 @@ app.use((req, res, next) => {
     logger.error(error.message);
     next(error);
 });
-app.use((err, req, res, next) => {
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     res.locals.message = err.message;
     res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
     res.status(err.status || 503);
     res.render('error');
-});
+}
+app.use(errorHandler);
 
-module.exports = app;
+export default app;
 // app.listen(app.get('port'), () => {
 //     console.log(app.get('port'), '번 포트에서 대기 중');
 // });

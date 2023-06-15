@@ -1,14 +1,13 @@
-const passport = require("passport");
-const { Strategy: LocalStrategy } = require("passport-local");
-const bcrypt = require('bcrypt');
+import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
+import bcrypt from 'bcrypt';
 
-const User = require("../models/user");
+import User from "../models/user";
 
-module.exports = () => {
+export default () => {
   passport.use(new LocalStrategy({
     usernameField: 'email', // req.body.email
     passwordField: 'password',  // req.body.password
-    passReqToCallback: false,   // 두번째 인자로 req객체를 받을 것인지의 여부
   }, async (email, password, done) => { 
     // 로그인을 시킬 것인지에 대한 여부 
     try {

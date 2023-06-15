@@ -1,6 +1,6 @@
-const User = require("../models/user");
+import User from "../models/user";
 
-exports.follow = async (userId, followingId) => {
+const follow = async (userId: number, followingId: string) => {
     const user = await User.findOne({ where: { id: userId } });
     if(user) {
         await user.addFollowing(parseInt(followingId, 10));
@@ -9,3 +9,5 @@ exports.follow = async (userId, followingId) => {
         return 'no user';
     }
 }
+
+export { follow };

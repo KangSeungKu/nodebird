@@ -1,16 +1,17 @@
-const Hashtag = require("../models/hashtag");
-const Post = require("../models/post");
-const User = require("../models/user");
+import { RequestHandler } from "express";
+import Hashtag from "../models/hashtag";
+import Post from "../models/post";
+import User from "../models/user";
 
-exports.renderProfile = (req, res, next) => {
+const renderProfile: RequestHandler = (req, res, next) => {
     res.render('profile', { title: '내 정보 - NodeBird' });
 };
 
-exports.renderJoin = (req, res, next) => {
+const renderJoin: RequestHandler = (req, res, next) => {
     res.render('join', { title: '회원 가입 - NodeBird' });
 };
 
-exports.renderMain = async (req, res, next) => {
+const renderMain: RequestHandler = async (req, res, next) => {
     try {
         const posts = await Post.findAll({
             include: {
@@ -29,14 +30,14 @@ exports.renderMain = async (req, res, next) => {
     }
 };
 
-exports.renderHashtag = async (req, res, next) => {
-    const query = req.query.hashtag;
+const renderHashtag: RequestHandler = async (req, res, next) => {
+    const query = req.query.hashtag as string;
     if(!query) {
         return res.redirect('/');
     }
     try {
         const hashtag = await Hashtag.findOne({ where: { title: query } });
-        let posts = [];
+        let posts: Post[] = [];
         if(hashtag) {
             posts = await hashtag.getPosts({
                 include: [{ model: User, attributes: ['id', 'nick'] }],
@@ -52,3 +53,5 @@ exports.renderHashtag = async (req, res, next) => {
     }
 
 }
+
+export { renderHashtag, renderJoin, renderMain, renderProfile };

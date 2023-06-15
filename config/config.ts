@@ -1,4 +1,4 @@
-{
+export default {
   "development": {
     "username": "root",
     "password": "nodejsbook",
@@ -15,9 +15,9 @@
   },
   "production": {
     "username": "root",
-    "password": null,
+    "password": "nodejsbook",
     "database": "database_production",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }
-}
+} as const;

@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
+import { isLoggedIn, isNotLoggedIn } from '../middlewares';
+import fs from 'fs';
+import multer from 'multer';
+import path from 'path';
+import { afterUploadImage, uploadPost } from '../controller/post';
 const router = express.Router();
-const { isLoggedIn, isNotLoggedIn } = require('../middlewares');
-const fs = require('fs');
-const multer = require('multer');
-const path = require('path');
-const { afterUploadImage, uploadPost } = require('../controller/post');
 
 try {
     fs.readdirSync('uploads');
@@ -33,4 +33,4 @@ const upload2 = multer();
 // POST /post/ 단순 게시글 올리기 위한 경로
 router.post('/', isLoggedIn, upload2.none(), uploadPost);
 
-module.exports = router;
+export default router;

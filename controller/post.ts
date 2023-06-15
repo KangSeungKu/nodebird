@@ -1,20 +1,21 @@
-const Hashtag = require("../models/hashtag");
-const Post = require("../models/post");
+import { RequestHandler } from "express";
+import Hashtag from "../models/hashtag";
+import Post from "../models/post";
 
-exports.afterUploadImage = (req, res) => {
+const afterUploadImage: RequestHandler = (req, res) => {
     console.log(req.file);
-    res.json({ url: `/img/${req.file.filename}` });
+    res.json({ url: `/img/${req.file?.filename}` });
 };
 
-exports.uploadPost = async (req, res, next) => {
+const uploadPost: RequestHandler = async (req, res, next) => {
     try {
         const post = await Post.create({
             content: req.body.content,
             img: req.body.url,
-            UserId: req.user.id,
+            UserId: req.user?.id,
         });
 
-        const hashtags = req.body.content.match(/#[^\s#]*/g);
+        const hashtags: string[] = req.body.content.match(/#[^\s#]*/g);
         if(hashtags) {
             const result = await Promise.all(hashtags.map((tag) => {
                 return Hashtag.findOrCreate({
@@ -30,3 +31,5 @@ exports.uploadPost = async (req, res, next) => {
         next(error);
     }
 };
+
+export { afterUploadImage, uploadPost };

@@ -1,7 +1,22 @@
-const Sequelize = require('sequelize');
+import Sequelize, { Model, CreationOptional, BelongsToManyAddAssociationMixin, NonAttribute } from 'sequelize';
+import Post from './post';
 
-class User extends Sequelize.Model {
-    static initiate(sequelize) {
+class User extends Model {
+    declare id: CreationOptional<number>;
+    declare email: string;
+    declare nick: string;
+    declare password: string;
+    declare provider: string;
+    declare snsId: string;
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
+    declare deletedAt: CreationOptional<Date>;
+    declare Followers: NonAttribute<User[]>;
+    declare Followings: NonAttribute<User[]>;
+
+    declare addFollowing: BelongsToManyAddAssociationMixin<User, number>;
+
+    static initiate(sequelize: Sequelize.Sequelize) {
         User.init({
             email: {
                 type: Sequelize.STRING(40),
@@ -37,14 +52,14 @@ class User extends Sequelize.Model {
         });
     }
 
-    static associate(db) {
-        db.User.hasMany(db.Post);
-        db.User.belongsToMany(db.User, {
+    static associate() {
+        User.hasMany(Post);
+        User.belongsToMany(User, {
             foreignKey: 'followingId',
             as: 'Followers',
             through: 'Follow',
         });
-        db.User.belongsToMany(db.User, {
+        User.belongsToMany(User, {
             foreignKey: 'followerId',
             as: 'Followings',
             through: 'Follow',
@@ -52,4 +67,4 @@ class User extends Sequelize.Model {
     }
 }
 
-module.exports = User;
+export default User;

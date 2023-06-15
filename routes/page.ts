@@ -1,8 +1,8 @@
-const express = require('express');
-const router = express.Router();
+import express from 'express';
+import { renderJoin, renderProfile, renderMain, renderHashtag } from '../controller/page';
+import { isLoggedIn, isNotLoggedIn } from '../middlewares';
 
-const { renderJoin, renderProfile, renderMain, renderHashtag } = require('../controller/page');
-const { isLoggedIn, isNotLoggedIn } = require('../middlewares');
+const router = express.Router();
 
 router.use((req, res, next) => {
     res.locals.user = req.user;
@@ -17,4 +17,4 @@ router.get('/join', isNotLoggedIn, renderJoin);
 router.get('/', renderMain);
 router.get('/hashtag', renderHashtag);
 
-module.exports = router;
+export default router;
